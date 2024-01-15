@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 
-import COLORS from '../../styles/colors';
+import Colors from '../../styles/colors';
 import {
   normalize,
   normalizeFont,
@@ -10,7 +10,7 @@ import {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
+    backgroundColor: Colors.primary,
   },
   topWrapper: {
     flexDirection: 'row',
@@ -41,18 +41,18 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     height: normalizeHeight(180),
     paddingHorizontal: normalize(30),
-    backgroundColor: COLORS.secondary,
+    backgroundColor: Colors.secondary,
   },
   joinButton: {
     opacity: 0.4,
     alignItems: 'center',
     borderRadius: normalize(12),
     paddingVertical: normalize(12),
-    backgroundColor: COLORS.primary,
+    backgroundColor: Colors.primary,
   },
   joinText: {
     fontWeight: '600',
-    color: COLORS.secondary,
+    color: Colors.secondary,
     fontSize: normalizeFont(18),
   },
   guestButton: {
@@ -60,11 +60,11 @@ const styles = StyleSheet.create({
     marginTop: normalize(16),
     borderRadius: normalize(12),
     paddingVertical: normalize(12),
-    backgroundColor: COLORS.primary,
+    backgroundColor: Colors.primary,
   },
   guestText: {
     fontWeight: '600',
-    color: COLORS.secondary,
+    color: Colors.secondary,
     fontSize: normalizeFont(18),
   },
 });

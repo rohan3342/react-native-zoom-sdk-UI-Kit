@@ -6,16 +6,15 @@ import { ZoomVideoSdkProvider } from '@zoom/react-native-videosdk';
 
 import { Navigation } from './navigation';
 import ZOOM_APP_CONFIG from './utils/constant';
-import COLORS from './styles/colors';
+import Colors from './styles/colors';
 
 export default function App() {
   useEffect(() => {
     if (Platform.OS === 'android') {
       ImmersiveMode.setBarStyle('Light');
-      ImmersiveMode.setBarColor(COLORS.primary);
+      ImmersiveMode.setBarColor(Colors.primary);
     } else {
       StatusBar.setBarStyle('light-content');
-      StatusBar.setBackgroundColor(COLORS.primary);
     }
   }, []);
 

@@ -1,17 +1,20 @@
 import { StyleSheet } from 'react-native';
 
+import Colors from '../../styles/colors';
+import { normalize } from '../../styles/responsive';
+
 const styles = StyleSheet.create({
   dotStyle: (width) => ({
     width,
     height: width,
-    borderRadius: 50,
     overflow: 'hidden',
-    backgroundColor: 'white',
+    borderRadius: normalize(50),
+    backgroundColor: Colors.secondary,
   }),
   animatedDotStyle: {
     flex: 1,
-    borderRadius: 50,
-    backgroundColor: '#26292E',
+    borderRadius: normalize(50),
+    backgroundColor: Colors.tertiary,
   },
 });
 

@@ -49,6 +49,7 @@ const normalizeFont = memoize((size) =>
 );
 
 export {
+  isTablet,
   normalize,
   SCREEN_WIDTH,
   SCREEN_HEIGHT,
