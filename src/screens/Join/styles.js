@@ -34,6 +34,7 @@ const styles = StyleSheet.create({
   },
   mainContainer: {
     flex: 1,
+    paddingBottom: normalize(30),
   },
   textInputStyle: {
     marginTop: normalizeHeight(35),
@@ -64,10 +65,52 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.23,
     elevation: 4,
   },
+  disabledBtn: {
+    opacity: 0.8,
+    backgroundColor: Colors.black030,
+  },
+  disabledBtnTitle: {
+    opacity: 0.8,
+    color: Colors.tertiary,
+  },
   btnTitleStyle: {
     fontWeight: '500',
     color: Colors.secondary,
     fontSize: normalizeFont(16),
+  },
+  joinOptionsText: {
+    letterSpacing: 0,
+    color: Colors.grey,
+    marginLeft: normalize(16),
+    fontSize: normalizeFont(11),
+    marginTop: normalizeHeight(30),
+    marginBottom: normalizeHeight(4),
+  },
+  toggleBtnWrapper: {
+    width: '100%',
+    paddingLeft: normalize(16),
+    borderTopWidth: normalize(1),
+    borderTopColor: Colors.black010,
+    borderBottomWidth: normalize(1),
+    backgroundColor: Colors.secondary,
+    borderBottomColor: Colors.black010,
+  },
+  toggleBtnStyle: {
+    width: '100%',
+    borderRadius: 0,
+    alignItems: 'center',
+    flexDirection: 'row',
+    paddingRight: normalize(16),
+    justifyContent: 'space-between',
+    backgroundColor: Colors.secondary,
+  },
+  toggleBtnLineStyle: {
+    borderBottomWidth: normalize(1),
+    borderBottomColor: Colors.black010,
+  },
+  toggleBtnTitleStyle: {
+    color: Colors.tertiary,
+    fontSize: normalizeFont(13),
   },
 });
 

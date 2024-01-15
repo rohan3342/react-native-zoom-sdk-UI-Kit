@@ -6,6 +6,7 @@ import styles from './styles';
 const Button = React.memo((props) => {
   const {
     Icon,
+    SecondIcon,
     title = 'Button',
     titleStyle = {},
     disabled = false,
@@ -27,6 +28,7 @@ const Button = React.memo((props) => {
           {title}
         </Text>
       ) : null}
+      {SecondIcon && <SecondIcon />}
     </TouchableOpacity>
   );
 });
