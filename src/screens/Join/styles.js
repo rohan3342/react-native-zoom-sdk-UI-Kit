@@ -1,12 +1,12 @@
 import { StyleSheet } from 'react-native';
 
-import Colors from '../../styles/colors';
 import {
   SCREEN_WIDTH,
   normalize,
   normalizeFont,
   normalizeHeight,
 } from '../../styles/responsive';
+import Colors from '../../styles/colors';
 
 const styles = StyleSheet.create({
   container: {
@@ -56,14 +56,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.primary,
     marginHorizontal: normalize(16),
     width: SCREEN_WIDTH - normalize(32),
-    shadowColor: Colors.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowRadius: 2.62,
-    shadowOpacity: 0.23,
-    elevation: 4,
   },
   disabledBtn: {
     opacity: 0.8,
