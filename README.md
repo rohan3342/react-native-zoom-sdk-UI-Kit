@@ -1,8 +1,8 @@
-# React Native Project
+# React Native Zoom SDK UI Kit
 
 ## Description
 
-This is a basic React Native project that serves as a starting point for mobile app development. It includes the essential setup and structure to help you kickstart your React Native journey.
+This is a custom zoom.us UI Kit designed for React Native projects. It provides the fundamental setup and structure to facilitate the integration of the Zoom SDK into your React Native project. Please note that this UI Kit is not an official release.
 
 ## Prerequisites
 
@@ -36,9 +36,9 @@ Before you begin, ensure you have the following installed:
 
 4. **Pod Install for iOS:**
 
-```bash
-    yarn ios:pods or npx pod-install
-```
+   ```bash
+   yarn ios:pods or npx pod-install
+   ```
 
 5. **Run the application:**
 
