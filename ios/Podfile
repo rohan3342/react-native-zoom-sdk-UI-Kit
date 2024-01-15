@@ -43,6 +43,17 @@ target 'zoomSdkWrapper' do
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
+  pod 'JWT', '3.0.0-beta.12'
+  pod 'ZoomVideoSDK/ZoomVideoSDK', '1.9.5'
+  pod 'ZoomVideoSDK/zoomcml', '1.9.5'
+  pod 'ZoomVideoSDK/CptShare', '1.9.5'
+  pod 'ZoomVideoSDK/zm_annoter_dynamic', '1.9.5'
+
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-Camera', :path => "#{permissions_path}/Camera"
+  pod 'Permission-Microphone', :path => "#{permissions_path}/Microphone"
+  pod 'Permission-PhotoLibrary', :path => "#{permissions_path}/PhotoLibrary"
+
   target 'zoomSdkWrapperTests' do
     inherit! :complete
     # Pods for testing
@@ -56,5 +67,20 @@ target 'zoomSdkWrapper' do
       :mac_catalyst_enabled => false
     )
     __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
+      end
+    end
   end
+
+  # post_install do |installer|
+  #   installer.pods_project.targets.each do |target|
+  #     target.build_configurations.each do |config|
+  #       config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = "arm64"
+  #     end
+  #   end
+  # end
 end
+
+

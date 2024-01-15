@@ -1,9 +1,16 @@
 package com.zoomsdkwrapper;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.os.Build;
+
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint;
 import com.facebook.react.defaults.DefaultReactActivityDelegate;
+
+import us.zoom.sdk.ZoomVideoSDK;
+import us.zoom.sdk.ZoomVideoSDKShareHelper;
 
 public class MainActivity extends ReactActivity {
 
@@ -14,6 +21,24 @@ public class MainActivity extends ReactActivity {
   @Override
   protected String getMainComponentName() {
     return "zoomSdkWrapper";
+  }
+
+  /**
+   *  Users need to add below to their own project to use sharing.
+   */
+  @Override
+  public void onActivityResult(int requestCode, int resultCode, Intent data){
+    super.onActivityResult(requestCode, resultCode, data);
+    if (requestCode == 0 && resultCode == Activity.RESULT_OK) {
+      Intent intent = new Intent(this, NotificationService.class);
+      ZoomVideoSDKShareHelper shareHelper = ZoomVideoSDK.getInstance().getShareHelper();
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        startForegroundService(intent);
+      } else {
+        startService(intent);
+      }
+      shareHelper.startShareScreen(data);
+    }
   }
 
   /**
