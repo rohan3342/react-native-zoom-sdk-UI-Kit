@@ -1,19 +1,16 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
 import { ZoomVideoSdkProvider } from '@zoom/react-native-videosdk';
 
-import { CameraOff } from './assets/SVG';
+import { Navigation } from './navigation';
 import ZOOM_APP_CONFIG from './utils/constant';
-const styles = StyleSheet.create({
-  container: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-});
 
 export default function App() {
   return (
-    <View style={styles.container}>
+    <NavigationContainer>
       <ZoomVideoSdkProvider config={ZOOM_APP_CONFIG}>
-        <CameraOff />
+        <Navigation />
       </ZoomVideoSdkProvider>
-    </View>
+    </NavigationContainer>
   );
 }
