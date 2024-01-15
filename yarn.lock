@@ -6064,6 +6064,11 @@ react-native-gradle-plugin@^0.71.17:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.71.19.tgz#3379e28341fcd189bc1f4691cefc84c1a4d7d232"
   integrity sha512-1dVk9NwhoyKHCSxcrM6vY6cxmojeATsBobDicX0ZKr7DgUF2cBQRTKsimQFvzH8XhOVXyH8p4HyDSZNIFI8OlQ==
 
+react-native-immersive-mode@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-native-immersive-mode/-/react-native-immersive-mode-2.0.1.tgz#3625424511a43863f07d36c700440aa9c0cf0869"
+  integrity sha512-2wlL7VIHl4rr4gwgnUp9K1UvsN7J5VCGqoAvBWQXvB4xn7XaoDEl6z9vqaqOiEdC6aAh2d/7zqcJz+dfcR2ELw==
+
 react-native-keyboard-area@thomasgazzoni/react-native-keyboard-area#master:
   version "1.0.6"
   resolved "https://codeload.github.com/thomasgazzoni/react-native-keyboard-area/tar.gz/b479793a6b0087dc36bd48979ce32ed9feaecdab"

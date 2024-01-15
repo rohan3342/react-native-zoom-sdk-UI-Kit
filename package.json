@@ -22,6 +22,7 @@
     "react-native": "0.71.6",
     "react-native-device-info": "^10.12.0",
     "react-native-gesture-handler": "^2.8.0",
+    "react-native-immersive-mode": "^2.0.1",
     "react-native-keyboard-area": "thomasgazzoni/react-native-keyboard-area#master",
     "react-native-linear-gradient": "2.6.2",
     "react-native-modal": "^13.0.1",

@@ -1,11 +1,16 @@
 import { StyleSheet } from 'react-native';
 
 import COLORS from '../../styles/colors';
-import { normalize, normalizeFont } from '../../styles/responsive';
+import {
+  normalize,
+  normalizeFont,
+  normalizeHeight,
+} from '../../styles/responsive';
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: COLORS.primary,
   },
   topWrapper: {
     flexDirection: 'row',
@@ -33,8 +38,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   buttonWrapper: {
-    height: normalize(180),
     justifyContent: 'center',
+    height: normalizeHeight(180),
     paddingHorizontal: normalize(30),
     backgroundColor: COLORS.secondary,
   },

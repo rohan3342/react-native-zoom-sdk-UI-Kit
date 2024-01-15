@@ -5,7 +5,6 @@ import {
   Alert,
   Platform,
   SafeAreaView,
-  ImageBackground,
   TouchableOpacity,
   useWindowDimensions,
 } from 'react-native';
@@ -109,63 +108,58 @@ function IntroScreen({ navigation }) {
   }
 
   return (
-    <ImageBackground
-      style={styles.container}
-      source={require('../../assets/IMG/intro-bg.png')}
-    >
-      <SafeAreaView style={styles.container}>
-        <View style={styles.topWrapper}>
-          {!!introIndex && (
-            <View style={styles.dotsContainer}>
-              {introImages.map((_, index) => {
-                return (
-                  <PaginationItem
-                    key={index}
-                    index={index}
-                    activeDot={introIndex}
-                    width={carouselWidth / 40}
-                    length={introImages.length}
-                  />
-                );
-              })}
-            </View>
-          )}
-        </View>
-        <Carousel
-          loop
-          autoPlay={false}
-          mode={'parallax'}
-          snapEnabled={true}
-          data={introImages}
-          pagingEnabled={true}
-          width={carouselWidth}
-          modeConfig={modeConfig}
-          renderItem={renderItem}
-          height={carouselWidth * 2}
-          scrollAnimationDuration={500}
-          onProgressChange={onProgressChange}
-        />
-        <View style={styles.bottomWrapper} pointerEvents='box-none'>
-          <Image source={require('../../assets/IMG/curve-mask.png')} />
-          <View style={styles.buttonWrapper}>
-            <TouchableOpacity
-              disabled={true}
-              activeOpacity={0.8}
-              style={styles.joinButton}
-            >
-              <Text style={styles.joinText}>Sign In</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              activeOpacity={0.8}
-              style={styles.guestButton}
-              onPress={() => navigation.navigate('Home')}
-            >
-              <Text style={styles.guestText}>Join a Meeting</Text>
-            </TouchableOpacity>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.topWrapper}>
+        {!!introIndex && (
+          <View style={styles.dotsContainer}>
+            {introImages.map((_, index) => {
+              return (
+                <PaginationItem
+                  key={index}
+                  index={index}
+                  activeDot={introIndex}
+                  width={carouselWidth / 40}
+                  length={introImages.length}
+                />
+              );
+            })}
           </View>
+        )}
+      </View>
+      <Carousel
+        loop
+        autoPlay={false}
+        mode={'parallax'}
+        snapEnabled={true}
+        data={introImages}
+        pagingEnabled={true}
+        width={carouselWidth}
+        modeConfig={modeConfig}
+        renderItem={renderItem}
+        height={carouselWidth * 1.8}
+        scrollAnimationDuration={500}
+        onProgressChange={onProgressChange}
+      />
+      <View style={styles.bottomWrapper} pointerEvents='box-none'>
+        <Image source={require('../../assets/IMG/curve-mask.png')} />
+        <View style={styles.buttonWrapper}>
+          <TouchableOpacity
+            disabled={true}
+            activeOpacity={0.8}
+            style={styles.joinButton}
+          >
+            <Text style={styles.joinText}>Sign In</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            activeOpacity={0.8}
+            style={styles.guestButton}
+            onPress={() => navigation.replace('Home')}
+          >
+            <Text style={styles.guestText}>Join a Meeting</Text>
+          </TouchableOpacity>
         </View>
-      </SafeAreaView>
-    </ImageBackground>
+      </View>
+    </SafeAreaView>
   );
 }
 
