@@ -10,6 +10,7 @@ const Stack = createStackNavigator();
 
 const screenOptions = {
   headerShown: false,
+  presentation: 'card',
   gestureEnabled: false,
   cardStyleInterpolator: ({ current, layouts }) => ({
     cardStyle: {
@@ -34,27 +35,23 @@ const screenOptions = {
 
 export function Navigation() {
   return (
-    <Stack.Navigator
-      mode='modal'
-      initialRouteName='Intro'
-      screenOptions={screenOptions}
-    >
+    <Stack.Navigator initialRouteName='Intro' screenOptions={screenOptions}>
       <Stack.Screen
         name='Intro'
         component={IntroScreen}
-        options={{ gestureEnabled: true, presentation: 'card' }}
+        options={{ gestureEnabled: true }}
       />
       <Stack.Screen
         name='Home'
         component={HomeScreen}
-        options={{ presentation: 'card' }}
+        options={{ gestureEnabled: true }}
       />
-      <Stack.Screen name='Join' component={JoinScreen} />
       <Stack.Screen
-        name='Call'
-        component={CallScreen}
-        options={{ gestureEnabled: true, presentation: 'card' }}
+        name='Join'
+        component={JoinScreen}
+        options={{ presentation: 'modal' }}
       />
+      <Stack.Screen name='Call' component={CallScreen} />
     </Stack.Navigator>
   );
 }
