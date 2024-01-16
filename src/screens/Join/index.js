@@ -1,6 +1,6 @@
 import Clipboard from '@react-native-clipboard/clipboard';
 import React, { useEffect, useMemo, useState } from 'react';
-import { Text, View, TouchableOpacity, Alert } from 'react-native';
+import { Text, View, TouchableOpacity } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import {
@@ -13,6 +13,7 @@ import styles from './styles';
 import Colors from '../../styles/colors';
 import Button from '../../components/Button';
 import Loader from '../../components/Loader';
+import Prompt from '../../components/Prompt';
 import TextInputBox from '../../components/TextInputBox';
 import { generateUniqueMeetingId } from '../../utils/common';
 import useLightStatusBar from '../../hooks/useLightStatusBar';
@@ -55,20 +56,25 @@ const Join = (props) => {
     setMeetingInfo({ ...meetingInfo, displayName: value?.trim() });
   }
 
-  function setPersonalLink() {
-    setMeetingInfo({
-      ...meetingInfo,
-      personalLink: !meetingInfo?.personalLink,
-    });
-  }
+  /*
+    function setPersonalLink() {
+      setMeetingInfo({
+        ...meetingInfo,
+        personalLink: !meetingInfo?.personalLink,
+      });
+    }
+  */
 
   function setMeetingPassword(value) {
     setMeetingInfo({ ...meetingInfo, meetingPassword: value?.trim() });
   }
 
   function onJoinPress() {
-    if (meetingInfo.meetingId.length === 7) {
-      Alert.alert('Meeting ID is not valid');
+    if (meetingInfo.meetingId.length !== 14) {
+      Prompt.show({
+        title: 'Meeting ID is not valid',
+        subTitle: 'Please enter a valid Meeting ID',
+      });
       return;
     }
     props?.navigation.navigate('Call', {
@@ -156,7 +162,8 @@ const Join = (props) => {
             onChangeText={setMeetingID}
             editable={!createNewMeeting}
             value={meetingInfo.meetingId}
-            containerStyle={styles.textInputStyle}
+            textInputStyle={styles.textInputStyle}
+            containerStyle={styles.textInputContainer}
             placeholder={
               meetingInfo?.personalLink ? 'Personal Link Name' : 'Meeting ID'
             }
@@ -166,26 +173,28 @@ const Join = (props) => {
             placeholder={'Meeting Password'}
             onChangeText={setMeetingPassword}
             value={meetingInfo.meetingPassword}
-            containerStyle={styles.textInputStyle}
+            textInputStyle={styles.textInputStyle}
+            containerStyle={styles.textInputContainer}
           />
           {/* <Button
-          maxLength={24}
-          activeOpacity={0.6}
-          onPress={setPersonalLink}
-          title={
-            meetingInfo?.personalLink
-              ? 'Join with a personal link name'
-              : 'Join with meeting ID'
-          }
-          titleStyle={styles.personalBtnTitleStyle}
-          containerStyle={styles.personalBtnContainerStyle}
-        /> */}
+            maxLength={24}
+            activeOpacity={0.6}
+            onPress={setPersonalLink}
+            title={
+              meetingInfo?.personalLink
+                ? 'Join with a personal link name'
+                : 'Join with meeting ID'
+            }
+            titleStyle={styles.personalBtnTitleStyle}
+            containerStyle={styles.personalBtnContainerStyle}
+          /> */}
           <TextInputBox
             autoFocus={false}
-            placeholder={'Display Name'}
+            placeholder={'Your Name'}
             onChangeText={setDisplayName}
             value={meetingInfo.displayName}
-            containerStyle={styles.textInputStyle}
+            textInputStyle={styles.textInputStyle}
+            containerStyle={styles.textInputContainer}
           />
           <Button
             title={'Join'}

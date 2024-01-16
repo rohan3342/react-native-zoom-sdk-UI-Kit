@@ -49,6 +49,9 @@ const styles = StyleSheet.create({
     paddingTop: normalizeHeight(20),
   },
   textInputStyle: {
+    textAlign: 'justify',
+  },
+  textInputContainer: {
     marginTop: normalizeHeight(12),
   },
   textInputIcon: {
