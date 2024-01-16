@@ -78,8 +78,9 @@ const Join = (props) => {
       return;
     }
     props?.navigation.navigate('Call', {
-      roleType: createNewMeeting ? 1 : 0,
+      sessionIdleTimeoutMins: '40',
       meetingId: meetingInfo.meetingId,
+      roleType: createNewMeeting ? 1 : 0,
       shareVideo: meetingInfo.shareVideo,
       displayName: meetingInfo.displayName,
       meetingPassword: meetingInfo.meetingPassword,
