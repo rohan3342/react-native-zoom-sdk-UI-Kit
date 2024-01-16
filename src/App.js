@@ -1,25 +1,30 @@
-import React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import React, { useEffect } from 'react';
+import { StatusBar } from 'react-native';
+import ImmersiveMode from 'react-native-immersive-mode';
+import { NavigationContainer } from '@react-navigation/native';
 import { ZoomVideoSdkProvider } from '@zoom/react-native-videosdk';
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
+import Colors from './styles/colors';
+import Prompt from './components/Prompt';
+import { Navigation } from './navigation';
+import ZOOM_APP_CONFIG from './utils/constant';
 
 export default function App() {
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      ImmersiveMode.setBarStyle('Light');
+      ImmersiveMode.setBarColor(Colors.primary);
+    } else {
+      StatusBar.setBarStyle('light-content');
+    }
+  }, []);
+
   return (
-    <View style={styles.container}>
-      <ZoomVideoSdkProvider
-        config={{
-          appGroupId: 'group.test.sdk',
-          domain: 'zoom.us',
-          enableLog: true,
-        }}
-      >
-        <Text>ROHAN</Text>
+    <NavigationContainer>
+      <ZoomVideoSdkProvider config={ZOOM_APP_CONFIG}>
+        <Prompt />
+        <Navigation />
       </ZoomVideoSdkProvider>
-    </View>
+    </NavigationContainer>
   );
 }
