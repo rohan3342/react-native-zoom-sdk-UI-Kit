@@ -15,6 +15,7 @@
     "android:release:aab": "cd android/ && ./gradlew clean && ./gradlew app:bundleRelease && cd .."
   },
   "dependencies": {
+    "@react-native-clipboard/clipboard": "^1.13.2",
     "@react-native-community/masked-view": "0.1.11",
     "@react-navigation/drawer": "6.4.4",
     "@react-navigation/native": "6.0.12",
@@ -24,6 +25,7 @@
     "react-native": "0.71.6",
     "react-native-device-info": "^10.12.0",
     "react-native-gesture-handler": "^2.8.0",
+    "react-native-get-random-values": "^1.10.0",
     "react-native-immersive-mode": "^2.0.1",
     "react-native-keyboard-area": "thomasgazzoni/react-native-keyboard-area#master",
     "react-native-linear-gradient": "2.6.2",
@@ -35,7 +37,8 @@
     "react-native-safe-area-context": "^4.5.1",
     "react-native-screens": "^3.17.0",
     "react-native-svg": "^14.1.0",
-    "react-native-svg-uri": "^1.2.3"
+    "react-native-svg-uri": "^1.2.3",
+    "uuid": "9.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

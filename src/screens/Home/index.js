@@ -15,10 +15,11 @@ const Home = (props) => {
 
   const ButtonData = useMemo(() => [
     {
+      activeOpacity: 1,
       title: 'New Meeting',
       titleStyle: styles.titleStyle,
       containerStyle: styles.containerStyle,
-      onPress: () => props?.navigation?.navigate('Join'),
+      onPress: () => props?.navigation?.navigate('Join', { isJoin: true }),
       Icon: () => (
         <View
           style={[styles.iconContainer, { backgroundColor: Colors.orange }]}
@@ -29,9 +30,10 @@ const Home = (props) => {
     },
     {
       title: 'Join',
+      activeOpacity: 1,
       titleStyle: styles.titleStyle,
       containerStyle: styles.containerStyle,
-      onPress: () => props?.navigation?.navigate('Join', { isJoin: true }),
+      onPress: () => props?.navigation?.navigate('Join', { isJoin: false }),
       Icon: () => (
         <View
           style={[styles.iconContainer, { backgroundColor: Colors.primary }]}
@@ -48,6 +50,7 @@ const Home = (props) => {
     },
     {
       disabled: true,
+      activeOpacity: 1,
       title: 'Schedule',
       Icon: () => (
         <View
@@ -71,6 +74,7 @@ const Home = (props) => {
     },
     {
       disabled: true,
+      activeOpacity: 1,
       title: 'Share Screen',
       Icon: () => (
         <View

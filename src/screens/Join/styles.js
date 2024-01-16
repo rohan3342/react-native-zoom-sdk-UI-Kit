@@ -26,6 +26,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: top + normalizeHeight(16) ?? normalizeHeight(16),
   }),
+  loaderWrapper: {
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1,
+    position: 'absolute',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.secondary,
+  },
   herderTitle: {
     fontWeight: '500',
     color: Colors.tertiary,
@@ -35,9 +46,14 @@ const styles = StyleSheet.create({
   mainContainer: {
     flex: 1,
     paddingBottom: normalize(30),
+    paddingTop: normalizeHeight(20),
   },
   textInputStyle: {
-    marginTop: normalizeHeight(35),
+    marginTop: normalizeHeight(12),
+  },
+  textInputIcon: {
+    right: normalize(16),
+    position: 'absolute',
   },
   personalBtnContainerStyle: {
     width: '100%',

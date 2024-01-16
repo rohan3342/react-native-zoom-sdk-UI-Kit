@@ -7,6 +7,7 @@ import { isTablet, normalizeHeight } from '../../styles/responsive';
 
 export default function ForteTextInput(props) {
   const {
+    Icon,
     value = '',
     visible = true,
     editable = true,
@@ -29,7 +30,11 @@ export default function ForteTextInput(props) {
   const textInputRef = useRef(null);
 
   function onPress() {
-    textInputRef?.current?.focus();
+    if (editable) {
+      textInputRef?.current?.focus();
+    } else {
+      props?.onPress();
+    }
   }
 
   return (
@@ -62,6 +67,7 @@ export default function ForteTextInput(props) {
         pointerEvents={editable ? 'auto' : 'none'}
         style={[styles.textInput(textColor), textInputStyle]}
       />
+      {Icon && <Icon />}
     </Pressable>
   );
 }

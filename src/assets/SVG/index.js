@@ -36,6 +36,7 @@ export { default as ChevronDown } from './chevron_down.svg';
 export { default as ChevronLeft } from './chevron_left.svg';
 export { default as ShareScreen } from './share-screen.svg';
 export { default as CheckCircle } from './check_circle.svg';
+export { default as CopyToClipBoard } from './copy-clip.svg';
 export { default as SwitchOnText } from './switchOnText.svg';
 export { default as ChevronRight } from './chevron_right.svg';
 export { default as SwitchOffText } from './switchOffText.svg';

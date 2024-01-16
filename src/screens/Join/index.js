@@ -1,25 +1,47 @@
-import React, { useMemo, useState } from 'react';
-import { ScrollView } from 'react-native-gesture-handler';
+import Clipboard from '@react-native-clipboard/clipboard';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Text, View, TouchableOpacity, Alert } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import {
+  SwitchOn,
+  SwitchOff,
+  ChevronLeft,
+  CopyToClipBoard,
+} from '../../assets/SVG';
 import styles from './styles';
 import Colors from '../../styles/colors';
 import Button from '../../components/Button';
+import Loader from '../../components/Loader';
 import TextInputBox from '../../components/TextInputBox';
+import { generateUniqueMeetingId } from '../../utils/common';
 import useLightStatusBar from '../../hooks/useLightStatusBar';
-import { ChevronLeft, SwitchOn, SwitchOff } from '../../assets/SVG';
 
 const Join = (props) => {
   const topInset = useSafeAreaInsets().top;
+  const createNewMeeting = props?.route?.params?.isJoin;
+
   useLightStatusBar(true, Colors.secondary);
+
+  const [loader, setLoader] = useState(true);
+  const [clipboard, setClipboard] = useState(false);
+
   const [meetingInfo, setMeetingInfo] = useState({
     meetingId: '',
     displayName: '',
     shareVideo: false,
     personalLink: false,
+    meetingPassword: '',
     doNotConnectToAudio: false,
   });
+
+  useEffect(() => {
+    if (createNewMeeting) {
+      let meetingId = generateUniqueMeetingId();
+      setMeetingInfo({ ...meetingInfo, meetingId });
+    }
+    setTimeout(() => setLoader(false), 1000);
+  }, []);
 
   function onBackBtnPress() {
     props?.navigation?.goBack();
@@ -40,17 +62,21 @@ const Join = (props) => {
     });
   }
 
+  function setMeetingPassword(value) {
+    setMeetingInfo({ ...meetingInfo, meetingPassword: value?.trim() });
+  }
+
   function onJoinPress() {
     if (meetingInfo.meetingId.length === 7) {
       Alert.alert('Meeting ID is not valid');
       return;
     }
     props?.navigation.navigate('Call', {
-      roleType: 0,
-      sessionPassword: '',
+      roleType: createNewMeeting ? 1 : 0,
       meetingId: meetingInfo.meetingId,
       shareVideo: meetingInfo.shareVideo,
       displayName: meetingInfo.displayName,
+      meetingPassword: meetingInfo.meetingPassword,
       doNotConnectToAudio: meetingInfo.doNotConnectToAudio,
     });
   }
@@ -78,8 +104,31 @@ const Join = (props) => {
     });
   }
 
+  function TextInputIcon() {
+    if (createNewMeeting) {
+      return (
+        <View style={styles.textInputIcon}>
+          <CopyToClipBoard
+            width={20}
+            height={20}
+            fill={clipboard ? Colors.primary : Colors.grey}
+          />
+        </View>
+      );
+    }
+    return false;
+  }
+
+  function CopyMeetingID() {
+    Clipboard.setString(meetingInfo?.meetingId);
+    setClipboard(true);
+    setTimeout(() => {
+      setClipboard(false);
+    }, 1000);
+  }
+
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <View style={styles.container}>
       <View style={styles.headerView(topInset)}>
         <TouchableOpacity
           hitSlop={20}
@@ -89,19 +138,37 @@ const Join = (props) => {
         >
           <ChevronLeft fill={Colors.primary} />
         </TouchableOpacity>
-        <Text style={styles.herderTitle}>Join a Meeting</Text>
+        <Text style={styles.herderTitle}>
+          {createNewMeeting ? 'Create a Meeting' : 'Join a Meeting'}
+        </Text>
       </View>
-      <View style={styles.mainContainer}>
-        <TextInputBox
-          maxLength={8}
-          onChangeText={setMeetingID}
-          value={meetingInfo.meetingId}
-          containerStyle={styles.textInputStyle}
-          placeholder={
-            meetingInfo?.personalLink ? 'Personal Link Name' : 'Meeting ID'
-          }
-        />
-        <Button
+
+      {loader ? (
+        <View style={styles.loaderWrapper}>
+          <Loader />
+        </View>
+      ) : (
+        <View style={styles.mainContainer}>
+          <TextInputBox
+            maxLength={14}
+            Icon={TextInputIcon}
+            onPress={CopyMeetingID}
+            onChangeText={setMeetingID}
+            editable={!createNewMeeting}
+            value={meetingInfo.meetingId}
+            containerStyle={styles.textInputStyle}
+            placeholder={
+              meetingInfo?.personalLink ? 'Personal Link Name' : 'Meeting ID'
+            }
+          />
+          <TextInputBox
+            autoFocus={false}
+            placeholder={'Meeting Password'}
+            onChangeText={setMeetingPassword}
+            value={meetingInfo.meetingPassword}
+            containerStyle={styles.textInputStyle}
+          />
+          {/* <Button
           maxLength={24}
           activeOpacity={0.6}
           onPress={setPersonalLink}
@@ -112,57 +179,62 @@ const Join = (props) => {
           }
           titleStyle={styles.personalBtnTitleStyle}
           containerStyle={styles.personalBtnContainerStyle}
-        />
-        <TextInputBox
-          autoFocus={false}
-          placeholder={'Display Name'}
-          onChangeText={setDisplayName}
-          value={meetingInfo.displayName}
-        />
-        <Button
-          title={'Join'}
-          onPress={onJoinPress}
-          disabled={isJoinButtonEnable}
-          titleStyle={[
-            styles.btnTitleStyle,
-            isJoinButtonEnable && styles.disabledBtnTitle,
-          ]}
-          containerStyle={[
-            styles.btnContainerStyle,
-            isJoinButtonEnable && styles.disabledBtn,
-          ]}
-        />
-        <Text style={styles.joinOptionsText}>JOIN OPTIONS</Text>
-        <View style={styles.toggleBtnWrapper}>
-          <Button
-            onPress={toggleConnectToAudio}
-            title={`Don't Connect To Audio`}
-            titleStyle={styles.toggleBtnTitleStyle}
-            SecondIcon={() =>
-              meetingInfo?.doNotConnectToAudio ? (
-                <SwitchOn fill={Colors.success} />
-              ) : (
-                <SwitchOff fill={Colors.black020} />
-              )
-            }
-            containerStyle={[styles.toggleBtnStyle, styles.toggleBtnLineStyle]}
+        /> */}
+          <TextInputBox
+            autoFocus={false}
+            placeholder={'Display Name'}
+            onChangeText={setDisplayName}
+            value={meetingInfo.displayName}
+            containerStyle={styles.textInputStyle}
           />
           <Button
-            onPress={toggleShareVideo}
-            title={`Turn Off My Video`}
-            containerStyle={styles.toggleBtnStyle}
-            titleStyle={styles.toggleBtnTitleStyle}
-            SecondIcon={() =>
-              meetingInfo?.shareVideo ? (
-                <SwitchOn fill={Colors.success} />
-              ) : (
-                <SwitchOff fill={Colors.black020} />
-              )
-            }
+            title={'Join'}
+            onPress={onJoinPress}
+            disabled={isJoinButtonEnable}
+            titleStyle={[
+              styles.btnTitleStyle,
+              isJoinButtonEnable && styles.disabledBtnTitle,
+            ]}
+            containerStyle={[
+              styles.btnContainerStyle,
+              isJoinButtonEnable && styles.disabledBtn,
+            ]}
           />
+          <Text style={styles.joinOptionsText}>JOIN OPTIONS</Text>
+          <View style={styles.toggleBtnWrapper}>
+            <Button
+              onPress={toggleConnectToAudio}
+              title={`Don't Connect To Audio`}
+              titleStyle={styles.toggleBtnTitleStyle}
+              SecondIcon={() =>
+                meetingInfo?.doNotConnectToAudio ? (
+                  <SwitchOn fill={Colors.primary} />
+                ) : (
+                  <SwitchOff fill={Colors.black020} />
+                )
+              }
+              containerStyle={[
+                styles.toggleBtnStyle,
+                styles.toggleBtnLineStyle,
+              ]}
+            />
+            <Button
+              onPress={toggleShareVideo}
+              title={`Turn Off My Video`}
+              containerStyle={styles.toggleBtnStyle}
+              titleStyle={styles.toggleBtnTitleStyle}
+              SecondIcon={() =>
+                meetingInfo?.shareVideo ? (
+                  <SwitchOn fill={Colors.primary} />
+                ) : (
+                  <SwitchOff fill={Colors.black020} />
+                )
+              }
+            />
+          </View>
         </View>
-      </View>
-    </ScrollView>
+      )}
+    </View>
   );
 };
 
