@@ -19,6 +19,7 @@ const Colors = {
   black030: '#00000030',
   black050: '#00000050',
   black060: '#00000060',
+  mirage: '#222222',
   transparent: 'transparent',
 };
 
