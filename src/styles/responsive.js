@@ -2,6 +2,7 @@ import DeviceInfo from 'react-native-device-info';
 import { Dimensions, PixelRatio, Platform } from 'react-native';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('screen');
+const { width: WINDOW_WIDTH, height: WINDOW_HEIGHT } = Dimensions.get('window');
 
 const baseWidths = {
   mobile: 375,
@@ -52,7 +53,9 @@ export {
   isTablet,
   normalize,
   SCREEN_WIDTH,
+  WINDOW_WIDTH,
   SCREEN_HEIGHT,
+  WINDOW_HEIGHT,
   normalizeFont,
   normalizeHeight,
 };

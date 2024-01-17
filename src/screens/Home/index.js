@@ -6,6 +6,7 @@ import styles from './styles';
 import Colors from '../../styles/colors';
 import Button from '../../components/Button';
 import { normalize } from '../../styles/responsive';
+import BottomTabView from '../../components/BottomTabView';
 import useLightStatusBar from '../../hooks/useLightStatusBar';
 import { VideoCam, Add, Calendar, ShareScreen } from '../../assets/SVG';
 
@@ -108,6 +109,7 @@ const Home = (props) => {
           <Button key={_in} {...el} />
         ))}
       </View>
+      <BottomTabView />
     </View>
   );
 };
