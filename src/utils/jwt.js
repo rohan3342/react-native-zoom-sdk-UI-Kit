@@ -6,7 +6,7 @@
 */
 
 import jwt from 'react-native-pure-jwt';
-import { ZOOM_APP_KEY, ZOOM_APP_SECRET } from '../../config';
+import { ZOOM_APP_KEY, ZOOM_APP_SECRET } from './constant';
 
 function makeId(length) {
   var result = '';
