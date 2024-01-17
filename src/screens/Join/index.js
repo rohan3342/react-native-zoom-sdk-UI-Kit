@@ -77,13 +77,22 @@ const Join = (props) => {
       });
       return;
     }
+
+    /*
+     sessionName,
+      displayName,
+      sessionPassword,
+      roleType,
+      sessionIdleTimeoutMins,
+    */
     props?.navigation.navigate('Call', {
       roleType: createNewMeeting ? 1 : 0,
-      meetingId: meetingInfo.meetingId,
-      shareVideo: meetingInfo.shareVideo,
-      displayName: meetingInfo.displayName,
-      meetingPassword: meetingInfo.meetingPassword,
-      doNotConnectToAudio: meetingInfo.doNotConnectToAudio,
+      shareVideo: meetingInfo?.shareVideo,
+      shareAudio: meetingInfo?.doNotConnectToAudio,
+      sessionName: meetingInfo?.meetingId,
+      displayName: meetingInfo?.displayName,
+      sessionPassword: meetingInfo.meetingPassword,
+      sessionIdleTimeoutMins: '40',
     });
   }
 
