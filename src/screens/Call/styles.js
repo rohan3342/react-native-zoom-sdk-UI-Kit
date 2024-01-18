@@ -41,6 +41,53 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
   },
+  headerView: {
+    flexDirection: 'row',
+    padding: normalize(8),
+    alignItems: 'center',
+    backgroundColor: Colors.black,
+    borderBottomColor: Colors.grey,
+    justifyContent: 'space-between',
+    borderBottomWidth: normalize(1),
+  },
+  headerViewBtnWrapper: {
+    width: '25%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  backBtn: {
+    width: normalize(40),
+    height: normalize(40),
+    backgroundColor: Colors.transparent,
+  },
+  infoBtn: {
+    left: '41%',
+    right: '41%',
+    position: 'absolute',
+    alignItems: 'center',
+    flexDirection: 'row',
+    bottom: normalize(12),
+    borderRadius: normalize(5),
+    justifyContent: 'space-between',
+    paddingVertical: normalizeHeight(6),
+  },
+  infoBtnText: {
+    fontWeight: 'bold',
+    color: Colors.white,
+    fontSize: normalizeFont(13),
+  },
+  leaveButton: {
+    borderRadius: normalize(5),
+    backgroundColor: Colors.error,
+    paddingHorizontal: normalize(16),
+    paddingVertical: normalizeHeight(6),
+  },
+  leaveText: {
+    fontWeight: 'bold',
+    color: Colors.white,
+    fontSize: normalizeFont(12),
+  },
   sessionInfo: {
     width: normalize(200),
     padding: normalize(8),
@@ -60,16 +107,8 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
     fontSize: normalizeFont(13),
   },
-  topWrapper: {
-    flexDirection: 'row',
-    padding: normalize(8),
-    alignItems: 'flex-start',
-    paddingTop: normalizeHeight(16),
-    justifyContent: 'space-between',
-  },
   topRightWrapper: {
     alignItems: 'flex-end',
-    paddingTop: normalizeHeight(8),
   },
   middleWrapper: {
     flex: 1,
@@ -79,18 +118,6 @@ const styles = StyleSheet.create({
   },
   bottomWrapper: {
     paddingHorizontal: normalize(8),
-  },
-  leaveButton: {
-    borderRadius: normalize(24),
-    backgroundColor: Colors.black060,
-    paddingHorizontal: normalize(24),
-    marginBottom: normalizeHeight(16),
-    paddingVertical: normalizeHeight(6),
-  },
-  leaveText: {
-    fontWeight: 'bold',
-    color: Colors.error,
-    fontSize: normalizeFont(14),
   },
   videoInfo: {
     alignItems: 'center',

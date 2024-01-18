@@ -8,7 +8,7 @@ import {
   Platform,
   StatusBar,
   TextInput,
-  SafeAreaView,
+  Pressable,
   ActionSheetIOS,
   TouchableOpacity,
   useWindowDimensions,
@@ -24,13 +24,17 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
 } from 'react-native-reanimated';
+import ImmersiveMode from 'react-native-immersive-mode';
+import { useFocusEffect } from '@react-navigation/native';
 import LinearGradient from 'react-native-linear-gradient';
-import React, { useEffect, useState, useRef } from 'react';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import generateJwt from '../../utils/jwt';
 import Button from '../../components/Button';
 import VideoView from '../../components/VideoView';
 import useIsMounted from '../../hooks/useIsMounted';
+import BottomTabView from '../../components/BottomTabView';
 import {
   Errors,
   useZoom,
@@ -58,13 +62,17 @@ import {
   CameraOn,
   CameraOff,
   VolumeMute,
+  VolumeHigh,
   ShareScreen,
-  Lock,
+  ChevronLeft,
+  ChevronDown,
+  ShieldCheckMark,
 } from '../../assets/SVG';
 import { normalize } from '../../styles/responsive';
 
 const Call = (props) => {
   const { navigation, route } = props;
+  const topInset = useSafeAreaInsets().top;
 
   const [
     isReceiveSpokenLanguageContentEnabled,
@@ -111,6 +119,23 @@ const Call = (props) => {
   const chatSendButtonScale = useSharedValue(0);
 
   isLongTouchRef.current = isLongTouch;
+
+  useFocusEffect(
+    useCallback(() => {
+      StatusBar.setHidden(true);
+      if (Platform.OS === 'android') {
+        ImmersiveMode.setBarMode('Full');
+        ImmersiveMode.fullLayout(true);
+      }
+      return () => {
+        StatusBar.setHidden(false);
+        if (Platform.OS === 'android') {
+          ImmersiveMode.setBarMode('Normal');
+          ImmersiveMode.fullLayout(false);
+        }
+      };
+    }, [])
+  );
 
   useEffect(() => {
     (async () => {
@@ -1075,13 +1100,16 @@ const Call = (props) => {
         style={styles.fullScreenVideo}
       />
 
-      <SafeAreaView style={styles.safeArea} pointerEvents='box-none'>
+      <View style={styles.safeArea} pointerEvents='box-none'>
         <Animated.View
           style={[styles.contents, uiOpacityAnimatedStyle]}
           pointerEvents='box-none'
         >
-          <View style={styles.topWrapper} pointerEvents='box-none'>
-            <View style={styles.sessionInfo}>
+          <View
+            style={[styles.headerView, { paddingTop: normalize(topInset) }]}
+            pointerEvents='box-none'
+          >
+            {/* <View style={styles.sessionInfo}>
               <View style={styles.sessionInfoHeader}>
                 <Text style={styles.sessionName}>{sessionName}</Text>
                 <Button
@@ -1107,24 +1135,53 @@ const Call = (props) => {
               <Text style={styles.numberOfUsers}>
                 {`Participants: ${users.length}`}
               </Text>
+            </View> */}
+            <View style={styles.headerViewBtnWrapper}>
+              <Button
+                title={false}
+                onPress={() => {}}
+                containerStyle={styles.backBtn}
+                Icon={() => (
+                  <ChevronLeft
+                    fill={Colors.white}
+                    width={normalize(20)}
+                    height={normalize(20)}
+                  />
+                )}
+              />
+              <Button
+                title={false}
+                onPress={() => {}}
+                containerStyle={styles.backBtn}
+                Icon={() => (
+                  <VolumeHigh
+                    fill={Colors.white}
+                    width={normalize(25)}
+                    height={normalize(25)}
+                  />
+                )}
+              />
             </View>
-
-            <View style={styles.topRightWrapper}>
-              <TouchableOpacity
-                onPress={onPressLeave}
-                style={styles.leaveButton}
-              >
-                <Text style={styles.leaveText}>LEAVE</Text>
-              </TouchableOpacity>
-              {fullScreenUser && videoInfo.length !== 0 && (
-                <View style={styles.videoInfo}>
-                  <Text style={styles.videoInfoText}>{videoInfo}</Text>
-                </View>
-              )}
-            </View>
+            <Pressable onPress={onPressLeave} style={styles.infoBtn}>
+              <ShieldCheckMark
+                fill={Colors.success}
+                width={normalize(18)}
+                height={normalize(18)}
+              />
+              <Text style={styles.infoBtnText}>Idanim</Text>
+              <ChevronDown
+                fill={Colors.white}
+                width={normalize(12)}
+                height={normalize(12)}
+              />
+            </Pressable>
+            <Pressable onPress={onPressLeave} style={styles.leaveButton}>
+              <Text style={styles.leaveText}>End</Text>
+            </Pressable>
           </View>
 
           <View style={styles.middleWrapper} pointerEvents='box-none'>
+            {/* Chat Message Code     
             <FlatList
               inverted
               data={chatMessages}
@@ -1168,6 +1225,7 @@ const Call = (props) => {
                 </View>
               )}
             />
+             */}
             <View style={styles.controls}>
               <Button
                 title={false}
@@ -1273,7 +1331,10 @@ const Call = (props) => {
               )}
             />
           )}
-          <Animated.View style={inputOpacityAnimatedStyle}>
+          {/* <BottomTabView /> */}
+          {/*
+          Chat Message Input Box   
+           <Animated.View style={inputOpacityAnimatedStyle}>
             <View style={styles.chatInputWrapper}>
               <TextInput
                 ref={chatInputRef}
@@ -1307,6 +1368,7 @@ const Call = (props) => {
               </Animated.View>
             </View>
           </Animated.View>
+           */}
         </View>
 
         <Modal
@@ -1390,7 +1452,7 @@ const Call = (props) => {
             <Text style={styles.connectingText}>Connecting...</Text>
           </View>
         )}
-      </SafeAreaView>
+      </View>
     </View>
   );
 };
