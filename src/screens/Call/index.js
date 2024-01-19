@@ -460,7 +460,6 @@ const Call = (props) => {
                   } else {
                     await zoom.declineRecordingConsent();
                     zoom.leaveSession(false);
-                    navigation.goBack();
                   }
                 },
               },
@@ -949,7 +948,12 @@ const Call = (props) => {
 
   const toggleSpeaker = async () => {
     try {
-      await zoom.audioHelper.setSpeaker(!isSpeakerOn);
+      if (!isSpeakerOn) {
+        zoom.audioHelper.startAudio();
+      } else {
+        zoom.audioHelper.stopAudio();
+      }
+      // await zoom.audioHelper.setSpeaker(!isSpeakerOn);
       setIsSpeakerOn(!isSpeakerOn);
     } catch (error) {
       console.log('toggleSpeaker', error);
