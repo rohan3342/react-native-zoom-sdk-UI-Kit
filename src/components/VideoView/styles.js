@@ -32,13 +32,20 @@ const styles = StyleSheet.create({
   focusedBorder: {
     borderColor: Colors.success,
   },
-  avatarLarge: {
-    width: normalize(200),
-    height: normalize(200),
+  avatarLargeView: {
+    width: '100%',
+    height: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: Colors.black,
   },
-  avatarSmall: {
+  avatarLarge: {
     width: normalize(60),
     height: normalize(60),
+  },
+  avatarSmall: {
+    width: normalize(20),
+    height: normalize(20),
   },
   userInfo: {
     left: 0,

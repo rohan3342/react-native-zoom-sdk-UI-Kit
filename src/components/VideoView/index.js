@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableWithoutFeedback } from 'react-native';
 
 import styles from './styles';
+import Colors from '../../styles/colors';
 import useIsMounted from '../../hooks/useIsMounted';
 import { normalize } from '../../styles/responsive';
 import { Avatar, Volume, VolumeMute } from '../../assets/SVG';
@@ -40,7 +41,7 @@ function VideoView(props) {
     const updateVideoStatus = () => {
       if (!user) return;
       (async () => {
-        isMounted() && setIsVideoOn(await user.videoStatus.isOn());
+        isMounted() && setIsVideoOn(await user.videoStatus?.isOn());
       })();
     };
 
@@ -139,7 +140,13 @@ function VideoView(props) {
             multiCameraIndex={multiCameraIndex}
           />
         ) : (
-          <Avatar width={avatarStyle?.width} height={avatarStyle?.height} />
+          <View style={styles.avatarLargeView}>
+            <Avatar
+              fill={Colors.white}
+              width={avatarStyle?.width}
+              height={avatarStyle?.height}
+            />
+          </View>
         )}
         {!fullScreen && (
           <View style={styles.userInfo}>

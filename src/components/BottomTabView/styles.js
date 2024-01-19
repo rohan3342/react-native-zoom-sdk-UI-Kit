@@ -12,7 +12,7 @@ import Colors from '../../styles/colors';
 
 const styles = StyleSheet.create({
   container: (currentHeight) => ({
-    zIndex: 1,
+    zIndex: 99,
     bottom: 0,
     width: SCREEN_WIDTH,
     position: 'absolute',

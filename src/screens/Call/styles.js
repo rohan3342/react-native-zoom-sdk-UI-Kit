@@ -2,6 +2,8 @@ import { StyleSheet } from 'react-native';
 
 import Colors from '../../styles/colors';
 import {
+  SCREEN_HEIGHT,
+  SCREEN_WIDTH,
   normalize,
   normalizeFont,
   normalizeHeight,
@@ -23,16 +25,20 @@ const styles = StyleSheet.create({
   connectingWrapper: {
     top: 0,
     left: 0,
+    zIndex: 3,
     width: '100%',
     height: '100%',
     position: 'absolute',
     alignItems: 'center',
+    flexDirection: 'row',
     justifyContent: 'center',
+    backgroundColor: Colors.black,
   },
   connectingText: {
     fontWeight: 'bold',
     color: Colors.secondary,
-    fontSize: normalizeFont(24),
+    marginLeft: normalize(10),
+    fontSize: normalizeFont(20),
   },
   safeArea: {
     flex: 1,
@@ -40,6 +46,55 @@ const styles = StyleSheet.create({
   contents: {
     flex: 1,
     alignItems: 'stretch',
+  },
+  headerView: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    padding: normalize(8),
+    backgroundColor: Colors.black,
+    borderBottomColor: Colors.grey,
+    justifyContent: 'space-between',
+    borderBottomWidth: normalize(1),
+    paddingHorizontal: normalize(12),
+  },
+  headerViewBtnWrapper: {
+    width: '20%',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  backBtn: {
+    width: normalize(40),
+    height: normalize(40),
+    backgroundColor: Colors.transparent,
+  },
+  infoBtn: {
+    left: '44%',
+    right: '44%',
+    position: 'absolute',
+    alignItems: 'center',
+    flexDirection: 'row',
+    bottom: normalize(12),
+    borderRadius: normalize(5),
+    justifyContent: 'space-between',
+    paddingVertical: normalizeHeight(6),
+  },
+  infoBtnText: {
+    fontWeight: 'bold',
+    color: Colors.white,
+    fontSize: normalizeFont(13),
+  },
+  leaveButton: {
+    marginRight: normalize(8),
+    borderRadius: normalize(5),
+    backgroundColor: Colors.error,
+    paddingHorizontal: normalize(16),
+    paddingVertical: normalizeHeight(6),
+  },
+  leaveText: {
+    fontWeight: 'bold',
+    color: Colors.white,
+    fontSize: normalizeFont(12),
   },
   sessionInfo: {
     width: normalize(200),
@@ -60,16 +115,8 @@ const styles = StyleSheet.create({
     color: Colors.secondary,
     fontSize: normalizeFont(13),
   },
-  topWrapper: {
-    flexDirection: 'row',
-    padding: normalize(8),
-    alignItems: 'flex-start',
-    paddingTop: normalizeHeight(16),
-    justifyContent: 'space-between',
-  },
   topRightWrapper: {
     alignItems: 'flex-end',
-    paddingTop: normalizeHeight(8),
   },
   middleWrapper: {
     flex: 1,
@@ -77,21 +124,10 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: normalize(8),
   },
-  bottomWrapper: {
+  bottomWrapper: (show) => ({
     paddingHorizontal: normalize(8),
-  },
-  leaveButton: {
-    borderRadius: normalize(24),
-    backgroundColor: Colors.black060,
-    paddingHorizontal: normalize(24),
-    marginBottom: normalizeHeight(16),
-    paddingVertical: normalizeHeight(6),
-  },
-  leaveText: {
-    fontWeight: 'bold',
-    color: Colors.error,
-    fontSize: normalizeFont(14),
-  },
+    paddingBottom: show ? SCREEN_HEIGHT * 0.1 : normalize(20),
+  }),
   videoInfo: {
     alignItems: 'center',
     borderRadius: normalize(8),
@@ -169,15 +205,18 @@ const styles = StyleSheet.create({
     height: normalizeHeight(36),
   },
   moreListWrapper: {
+    left: 0,
+    right: 0,
     bottom: 0,
+    zIndex: 2,
     position: 'absolute',
-    borderRadius: normalize(10),
-    marginHorizontal: normalize(40),
-    backgroundColor: Colors.white090,
+    padding: normalize(16),
+    backgroundColor: Colors.dark_grey,
+    borderTopLeftRadius: normalize(10),
+    borderTopRightRadius: normalize(10),
   },
   moreList: {
     overflow: 'hidden',
-    borderRadius: normalize(10),
   },
   moreItemText: {
     color: Colors.black,
@@ -186,30 +225,34 @@ const styles = StyleSheet.create({
   moreItemWrapper: {
     textAlign: 'center',
     alignItems: 'center',
-    borderBottomWidth: 0,
     padding: normalize(5),
     borderWidth: normalize(1),
+    borderRadius: normalize(8),
     fontSize: normalizeFont(90),
     borderColor: Colors.black020,
+    paddingVertical: normalize(8),
+    marginBottom: normalizeHeight(8),
     paddingHorizontal: normalize(30),
+    backgroundColor: Colors.black060,
   },
   cancelButton: {
-    borderTopWidth: 1,
     alignItems: 'center',
-    borderColor: Colors.black020,
     paddingTop: normalizeHeight(20),
     paddingBottom: normalizeHeight(20),
   },
   cancelButtonText: {
+    fontWeight: '700',
     color: Colors.primary,
-    fontSize: normalizeFont(20),
+    fontSize: normalizeFont(18),
   },
   modalContainer: {
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: Colors.black050,
   },
   modal: {
+    width: '80%',
     paddingLeft: normalize(24),
     borderRadius: normalize(8),
     paddingRight: normalize(16),
@@ -219,19 +262,32 @@ const styles = StyleSheet.create({
   },
   modalTitleText: {
     fontSize: normalizeFont(18),
-    marginBottom: normalizeHeight(8),
+    marginBottom: normalizeHeight(14),
   },
   modalActionContainer: {
     flexDirection: 'row',
-    justifyContent: 'center',
+    justifyContent: 'space-around',
+    marginTop: normalizeHeight(20),
+  },
+  modalActionApply: {
+    borderRadius: normalize(4),
+    paddingHorizontal: normalize(24),
+    backgroundColor: Colors.primary,
+    paddingVertical: normalizeHeight(10),
   },
   modalAction: {
-    marginTop: normalizeHeight(16),
+    borderRadius: normalize(4),
     paddingHorizontal: normalize(24),
+    paddingVertical: normalizeHeight(10),
+  },
+  modalActionApplyText: {
+    fontWeight: '500',
+    color: Colors.white,
+    fontSize: normalizeFont(14),
   },
   modalActionText: {
-    fontWeight: 'bold',
-    color: Colors.hit_grey,
+    fontWeight: '500',
+    color: Colors.dark_grey,
     fontSize: normalizeFont(14),
   },
   moreItem: {
@@ -241,6 +297,8 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   moreItemText: {
+    fontWeight: '500',
+    color: Colors.white,
     fontSize: normalizeFont(16),
   },
   moreItemIcon: {
@@ -252,17 +310,72 @@ const styles = StyleSheet.create({
     fontSize: normalizeFont(24),
   },
   renameInput: {
-    borderWidth: 0,
+    width: '100%',
+    borderWidth: 1,
     color: Colors.black,
-    width: normalize(200),
+    padding: normalize(8),
+    borderRadius: normalize(8),
+    fontSize: normalizeFont(14),
     borderColor: Colors.hit_grey,
-    marginTop: normalizeHeight(16),
-    borderBottomWidth: normalize(1),
+    marginTop: normalizeHeight(6),
+    // borderBottomWidth: normalize(1),
   },
   keyboardArea: {
     width: 0,
     height: 0,
     zIndex: normalizeHeight(-100),
+  },
+  modalWrapper: {
+    flex: 1,
+    backgroundColor: Colors?.black060,
+  },
+  modalOverlay: {
+    flex: 1,
+  },
+  infoModalView: {
+    width: SCREEN_WIDTH,
+    padding: normalize(16),
+    backgroundColor: Colors.dark_grey,
+    borderTopLeftRadius: normalize(10),
+    borderTopRightRadius: normalize(10),
+    paddingVertical: normalizeHeight(20),
+  },
+  textWrapper: {
+    width: '100%',
+    flexDirection: 'row',
+    borderRadius: normalize(5),
+    justifyContent: 'space-between',
+    marginBottom: normalizeHeight(8),
+    paddingHorizontal: normalize(10),
+    backgroundColor: Colors.black060,
+    paddingVertical: normalizeHeight(8),
+  },
+  titleText: {
+    width: '100%',
+    textAlign: 'center',
+    fontWeight: '700',
+    color: Colors.white,
+    fontSize: normalizeFont(16),
+    marginBottom: normalizeHeight(14),
+  },
+  headerText: {
+    color: Colors.off_white,
+    fontSize: normalizeFont(14),
+  },
+  subText: {
+    fontWeight: '700',
+    color: Colors.white,
+    fontSize: normalizeFont(14),
+  },
+  infoCloseBtn: {
+    alignItems: 'center',
+    marginTop: normalizeHeight(10),
+    paddingVertical: normalizeHeight(10),
+  },
+  infoCloseBtnText: {
+    fontWeight: '700',
+    color: Colors.white,
+    fontSize: normalizeFont(16),
   },
 });
 

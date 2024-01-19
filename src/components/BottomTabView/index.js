@@ -1,44 +1,35 @@
-import {
-  View,
-  Text,
-  Platform,
-  Pressable,
-  StatusBar,
-  ScrollView,
-  PanResponder,
-} from 'react-native';
 import React, { useState, useRef, useCallback } from 'react';
+import { View, Text, FlatList, Pressable, PanResponder } from 'react-native';
 
 import {
   More,
+  MicOn,
+  MicOff,
   Record,
   Message,
   Settings,
   CameraOn,
   CameraOff,
   GroupUser,
-  VolumeHigh,
-  VolumeMute,
   ScreenShareOn,
   ScreenShareOff,
 } from '../../assets/SVG';
 import styles from './styles';
 import Colors from '../../styles/colors';
 import { normalize } from '../../styles/responsive';
-import ImmersiveMode from 'react-native-immersive-mode';
-import { useFocusEffect } from '@react-navigation/native';
 
 const GetIcon = ({ name, state }) => {
   switch (name) {
-    case 'Audio':
+    case 'Mic':
       return state ? (
-        <VolumeHigh
+        <MicOn
           width={normalize(22)}
           fill={Colors.success}
           height={normalize(22)}
+          stroke={Colors.success}
         />
       ) : (
-        <VolumeMute width={normalize(22)} height={normalize(22)} />
+        <MicOff width={normalize(22)} height={normalize(22)} />
       );
     case 'Video':
       return state ? (
@@ -112,57 +103,34 @@ const TabView = React.memo(({ children, tabViewStyle = {} }) => (
   <View style={tabViewStyle}>{children}</View>
 ));
 
-const TabBar = React.memo(
-  ({ children, tabBarStyle = {}, scrollViewProps, currentTabIndex }) => {
-    const scrollViewRef = useRef(null);
-
-    React.useEffect(() => {
-      // Reset scroll position when currentTabIndex is set to 0
-      if (scrollViewRef.current && currentTabIndex === 0) {
-        scrollViewRef.current.scrollTo({ x: 0, animated: true });
-      }
-    }, [currentTabIndex]);
-
-    return (
-      <ScrollView
-        horizontal
-        ref={scrollViewRef}
-        showsHorizontalScrollIndicator={false}
-        style={[styles.tabBarScrollView, tabBarStyle]}
-        {...scrollViewProps}
-      >
-        {children}
-      </ScrollView>
-    );
-  }
-);
-
 const TabItem = React.memo(({ children, onPress, tabItemStyle = {} }) => (
   <Pressable onPress={onPress} style={tabItemStyle}>
     {children}
   </Pressable>
 ));
 
-const BottomTabView = () => {
+const BottomTabView = (props) => {
   const swiped = useRef(null);
   const [currentTabIndex, setTabIndex] = useState(0);
   const [containerHeight, setContainerHeight] = useState('0%');
   const [tabItems, setTabItems] = useState([
     {
-      name: 'Audio',
+      name: 'Mic',
       height: '0%',
-      state: false,
+      state: props?.isMuted || false,
       type: 'toggle',
       onPress: () => {
-        console.log('Audio Pressed');
+        props?.onPressAudio?.();
+        console.log('Mic Pressed');
       },
     },
     {
       name: 'Video',
       height: '0%',
-      state: false,
+      state: props?.isVideoOn || false,
       type: 'toggle',
       onPress: () => {
+        props?.onPressVideo?.();
         console.log('Video Pressed');
       },
     },
@@ -187,17 +155,18 @@ const BottomTabView = () => {
     {
       name: 'Share',
       height: '0%',
-      state: false,
+      state: props?.isSharing || false,
       type: 'toggle',
       onPress: () => {
+        // props?.onPressShare?.();
         console.log('Share Pressed');
       },
     },
     {
-      name: 'Record',
       height: '0%',
-      state: false,
       type: 'toggle',
+      name: 'Record',
+      state: props?.isRecordingStarted || false,
       onPress: () => {
         console.log('Record Pressed');
       },
@@ -208,27 +177,11 @@ const BottomTabView = () => {
       state: false,
       type: 'modal',
       onPress: () => {
+        props?.onPressMore?.();
         console.log('More Pressed');
       },
     },
   ]);
-
-  useFocusEffect(
-    useCallback(() => {
-      StatusBar.setHidden(true);
-      if (Platform.OS === 'android') {
-        ImmersiveMode.setBarMode('Full');
-        ImmersiveMode.fullLayout(true);
-      }
-      return () => {
-        StatusBar.setHidden(false);
-        if (Platform.OS === 'android') {
-          ImmersiveMode.setBarMode('Normal');
-          ImmersiveMode.fullLayout(false);
-        }
-      };
-    }, [])
-  );
 
   const onTabBarItemPressed = useCallback(
     (item, index) => {
@@ -290,21 +243,6 @@ const BottomTabView = () => {
     swiped.current = false;
   };
 
-  const tabItemsRendered = tabItems.map((item, index) => (
-    <React.Fragment key={item.name}>
-      <TabItem
-        tabItemStyle={styles.tabItemStyle}
-        onPress={() => onTabBarItemPressed(item, index)}
-      >
-        <GetIcon name={item?.name} state={item?.state} />
-        <Text style={[styles.tabItemText, { color: getColor(item, index) }]}>
-          {item.name}
-        </Text>
-      </TabItem>
-      {index === 1 && <View style={styles.separatorLine} />}
-    </React.Fragment>
-  ));
-
   const tabViewsRendered = tabItems.map((item, index) => (
     <TabView
       key={item.name}
@@ -329,12 +267,33 @@ const BottomTabView = () => {
   return (
     <TabContainer tabContainerStyle={styles.container(containerHeight)}>
       <View style={styles.tabBarWrapperView(containerHeight)}>
-        <TabBar
-          tabBarStyle={styles.tabBarStyle}
-          currentTabIndex={currentTabIndex}
-        >
-          {tabItemsRendered}
-        </TabBar>
+        <View style={styles.tabBarStyle} pointerEvents='box-none'>
+          <FlatList
+            onTouchEnd={props?.onTouchEnd}
+            onTouchStart={props?.onTouchStart}
+            horizontal
+            data={tabItems}
+            renderItem={({ item, index }) => (
+              <>
+                <TabItem
+                  tabItemStyle={styles.tabItemStyle}
+                  onPress={() => onTabBarItemPressed(item, index)}
+                >
+                  <GetIcon name={item?.name} state={item?.state} />
+                  <Text
+                    style={[
+                      styles.tabItemText,
+                      { color: getColor(item, index) },
+                    ]}
+                  >
+                    {item.name}
+                  </Text>
+                </TabItem>
+                {index === 1 && <View style={styles.separatorLine} />}
+              </>
+            )}
+          />
+        </View>
       </View>
       <View
         {...panResponder.panHandlers}
