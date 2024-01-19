@@ -9,9 +9,10 @@ import {
   StatusBar,
   TextInput,
   Pressable,
+  BackHandler,
   ActionSheetIOS,
-  TouchableOpacity,
   useWindowDimensions,
+  TouchableWithoutFeedback,
 } from 'react-native';
 import {
   RNKeyboard,
@@ -25,13 +26,15 @@ import Animated, {
   useAnimatedStyle,
 } from 'react-native-reanimated';
 import ImmersiveMode from 'react-native-immersive-mode';
-import { useFocusEffect } from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
 import LinearGradient from 'react-native-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 
 import generateJwt from '../../utils/jwt';
 import Button from '../../components/Button';
+import Loader from '../../components/Loader';
 import VideoView from '../../components/VideoView';
 import useIsMounted from '../../hooks/useIsMounted';
 import BottomTabView from '../../components/BottomTabView';
@@ -56,19 +59,14 @@ import {
 import styles from './styles';
 import Colors from '../../styles/colors';
 import {
-  Info,
-  Send,
-  Volume,
-  CameraOn,
-  CameraOff,
   VolumeMute,
   VolumeHigh,
-  ShareScreen,
-  ChevronLeft,
-  ChevronDown,
+  CameraReverse,
   ShieldCheckMark,
 } from '../../assets/SVG';
-import { normalize } from '../../styles/responsive';
+import { normalize, normalizeHeight } from '../../styles/responsive';
+import useLightStatusBar from '../../hooks/useLightStatusBar';
+import Prompt from '../../components/Prompt';
 
 const Call = (props) => {
   const { navigation, route } = props;
@@ -104,7 +102,9 @@ const Call = (props) => {
   const [isShareDeviceAudio, setIsShareDeviceAudio] = useState(false);
   const [isRenameModalVisible, setIsRenameModalVisible] = useState(false);
   const [isOriginalAspectRatio, setIsOriginalAspectRatio] = useState(false);
-
+  const [showBottomTab, setShowBottomTab] = useState(false);
+  const [cameraReverse, setCameraReverse] = useState(false);
+  const [showInfo, setShowInfo] = useState(false);
   let touchTimer;
   const zoom = useZoom();
   const isMounted = useIsMounted();
@@ -119,19 +119,16 @@ const Call = (props) => {
   const chatSendButtonScale = useSharedValue(0);
 
   isLongTouchRef.current = isLongTouch;
+  useLightStatusBar(false, Colors.black);
 
   useFocusEffect(
     useCallback(() => {
-      StatusBar.setHidden(true);
       if (Platform.OS === 'android') {
-        ImmersiveMode.setBarMode('Full');
-        ImmersiveMode.fullLayout(true);
+        StatusBar.setHidden(true);
       }
       return () => {
-        StatusBar.setHidden(false);
         if (Platform.OS === 'android') {
-          ImmersiveMode.setBarMode('Normal');
-          ImmersiveMode.fullLayout(false);
+          StatusBar.setHidden(false);
         }
       };
     }, [])
@@ -157,7 +154,10 @@ const Call = (props) => {
         });
       } catch (e) {
         console.log(e);
-        Alert.alert('Failed to join the session');
+        Prompt.show({
+          subTitle: 'Please try again!',
+          title: 'Failed to Join the Meeting',
+        });
         setTimeout(() => navigation.goBack(), 1000);
       }
     })();
@@ -168,7 +168,13 @@ const Call = (props) => {
       );
     }
 
+    const backHandler = BackHandler.addEventListener(
+      'hardwareBackPress',
+      onPressLeave
+    );
+
     return () => {
+      backHandler.remove();
       if (Platform.OS === 'android') {
         RNKeyboard.setWindowSoftInputMode(
           SoftInputMode.SOFT_INPUT_ADJUST_RESIZE
@@ -247,6 +253,7 @@ const Call = (props) => {
       EventType.onSessionLeave,
       () => {
         setIsInSession(false);
+        setShowBottomTab(false);
         setUsersInSession([]);
         navigation.goBack();
       }
@@ -528,10 +535,12 @@ const Call = (props) => {
       EventType.onError,
       async (error) => {
         console.log('Error: ', JSON.stringify(error));
-        Alert.alert('Error: ', error.error);
         switch (error.errorType) {
           case Errors.SessionJoinFailed:
-            // Alert.alert('Failed to join the session');
+            Prompt.show({
+              subTitle: 'Please try again!',
+              title: 'Failed to Join the Meeting',
+            });
             setTimeout(() => navigation.goBack(), 1000);
             break;
           default:
@@ -637,6 +646,9 @@ const Call = (props) => {
       duration: 300,
       easing: inputOpacity.value === 0 ? easeIn : easeOut,
     });
+    setTimeout(() => {
+      setShowBottomTab((prev) => !prev);
+    }, 100);
   };
 
   const sendChatMessage = async () => {
@@ -766,20 +778,20 @@ const Call = (props) => {
         },
       },
       // { text: 'Switch Camera', onPress: () => zoom.videoHelper.switchCamera() },
-      {
-        text: `${
-          isOriginalAspectRatio ? 'Enable' : 'Disable'
-        } original aspect ratio`,
-        onPress: async () => {
-          await zoom.videoHelper.enableOriginalAspectRatio(
-            !isOriginalAspectRatio
-          );
-          setIsOriginalAspectRatio(
-            await zoom.videoHelper.isOriginalAspectRatioEnabled()
-          );
-          console.log('isOriginalAspectRatio= ' + isOriginalAspectRatio);
-        },
-      },
+      // {
+      //   text: `${
+      //     isOriginalAspectRatio ? 'Enable' : 'Disable'
+      //   } original aspect ratio`,
+      //   onPress: async () => {
+      //     await zoom.videoHelper.enableOriginalAspectRatio(
+      //       !isOriginalAspectRatio
+      //     );
+      //     setIsOriginalAspectRatio(
+      //       await zoom.videoHelper.isOriginalAspectRatioEnabled()
+      //     );
+      //     console.log('isOriginalAspectRatio= ' + isOriginalAspectRatio);
+      //   },
+      // },
       {
         text: `Get Session Dial-in Number infos`,
         onPress: async () => {
@@ -789,26 +801,26 @@ const Call = (props) => {
         },
       },
       // { text: 'Switch Camera', onPress: () => zoom.videoHelper.switchCamera() },
-      {
-        text: `${isMicOriginalOn ? 'Disable' : 'Enable'} Original Sound`,
-        onPress: async () => {
-          await zoom.audioSettingHelper.enableMicOriginalInput(
-            !isMicOriginalOn
-          );
-          console.log(
-            `Original sound ${isMicOriginalOn ? 'Disabled' : 'Enabled'}`
-          );
-          setIsMicOriginalOn(!isMicOriginalOn);
-        },
-      },
-      {
-        text: 'Change chat privilege',
-        onPress: async () => {
-          await zoom.chatHelper.changeChatPrivilege(
-            ZoomVideoSDKChatPrivilegeType.ZoomVideoSDKChatPrivilege_Publicly
-          );
-        },
-      },
+      // {
+      //   text: `${isMicOriginalOn ? 'Disable' : 'Enable'} Original Sound`,
+      //   onPress: async () => {
+      //     await zoom.audioSettingHelper.enableMicOriginalInput(
+      //       !isMicOriginalOn
+      //     );
+      //     console.log(
+      //       `Original sound ${isMicOriginalOn ? 'Disabled' : 'Enabled'}`
+      //     );
+      //     setIsMicOriginalOn(!isMicOriginalOn);
+      //   },
+      // },
+      // {
+      //   text: 'Change chat privilege',
+      //   onPress: async () => {
+      //     await zoom.chatHelper.changeChatPrivilege(
+      //       ZoomVideoSDKChatPrivilegeType.ZoomVideoSDKChatPrivilege_Publicly
+      //     );
+      //   },
+      // },
     ];
 
     if (isSharing) {
@@ -873,81 +885,80 @@ const Call = (props) => {
         ...options,
         {
           text: `Turn ${isSpeakerOn ? 'off' : 'on'} Speaker`,
-          onPress: async () => {
-            await zoom.audioHelper.setSpeaker(!isSpeakerOn);
-            setIsSpeakerOn(!isSpeakerOn);
-          },
+          onPress: toggleSpeaker,
         },
       ];
     }
 
-    if (mySelf.isHost) {
-      options = [
-        ...options,
-        {
-          text: `${isShareLocked ? 'Unlock' : 'Lock'} Share`,
-          onPress: () => zoom.shareHelper.lockShare(!isShareLocked),
-        },
-        {
-          text: `${isFullScreenUserManager ? 'Revoke' : 'Make'} Manager`,
-          onPress: () => {
-            fullScreenUser &&
-              (isFullScreenUserManager
-                ? zoom.userHelper.revokeManager(fullScreenUser.userId)
-                : zoom.userHelper.makeManager(fullScreenUser.userId));
-          },
-        },
-        {
-          text: 'Change Name',
-          onPress: () => setIsRenameModalVisible(true),
-        },
-      ];
-
-      if (canStartRecording) {
+    /*
+      if (mySelf.isHost) {
         options = [
+          ...options,
           {
-            text: `${isRecordingStarted ? 'Stop' : 'Start'} Recording`,
-            onPress: async () => {
-              if (!isRecordingStarted) {
-                await zoom.recordingHelper.startCloudRecording();
-              } else {
-                await zoom.recordingHelper.stopCloudRecording();
-              }
+            text: `${isShareLocked ? 'Unlock' : 'Lock'} Share`,
+            onPress: () => zoom.shareHelper.lockShare(!isShareLocked),
+          },
+          {
+            text: `${isFullScreenUserManager ? 'Revoke' : 'Make'} Manager`,
+            onPress: () => {
+              fullScreenUser &&
+                (isFullScreenUserManager
+                  ? zoom.userHelper.revokeManager(fullScreenUser.userId)
+                  : zoom.userHelper.makeManager(fullScreenUser.userId));
             },
           },
-          ...options,
-        ];
-      }
-    }
-    setOnMoreOptions(options);
-
-    if (Platform.OS === 'android') {
-      setModalVisible(true);
-    }
-
-    if (Platform.OS === 'ios') {
-      options = [
-        ...options,
-        {
-          text: `${isPiPViewEnabled ? 'Disable' : 'Enable'} PiP view`,
-          onPress: () => {
-            setIsPiPViewEnabled(!isPiPViewEnabled);
+          {
+            text: 'Change Name',
+            onPress: () => setIsRenameModalVisible(true),
           },
-        },
-      ];
+        ];
 
-      ActionSheetIOS.showActionSheetWithOptions(
-        {
-          options: ['Cancel', ...options.map((option) => option.text)],
-          cancelButtonIndex: 0,
-        },
-        (buttonIndex) => {
-          if (buttonIndex != 0) {
-            options[buttonIndex - 1]?.onPress();
-          }
+        if (canStartRecording) {
+          options = [
+            {
+              text: `${isRecordingStarted ? 'Stop' : 'Start'} Recording`,
+              onPress: async () => {
+                if (!isRecordingStarted) {
+                  await zoom.recordingHelper.startCloudRecording();
+                } else {
+                  await zoom.recordingHelper.stopCloudRecording();
+                }
+              },
+            },
+            ...options,
+          ];
         }
-      );
+      }
+    */
+
+    // if (Platform.OS === 'ios') {
+    //   options = [
+    //     ...options,
+    //     {
+    //       text: `${isPiPViewEnabled ? 'Disable' : 'Enable'} PiP view`,
+    //       onPress: () => {
+    //         setIsPiPViewEnabled(!isPiPViewEnabled);
+    //       },
+    //     },
+    //   ];
+    // }
+
+    setOnMoreOptions(options);
+    setModalVisible(true);
+  };
+
+  const toggleSpeaker = async () => {
+    try {
+      await zoom.audioHelper.setSpeaker(!isSpeakerOn);
+      setIsSpeakerOn(!isSpeakerOn);
+    } catch (error) {
+      console.log('toggleSpeaker', error);
     }
+  };
+
+  const SwitchCamera = async () => {
+    await zoom.videoHelper.switchCamera();
+    setCameraReverse((prev) => !prev);
   };
 
   const onPressLeave = async () => {
@@ -983,6 +994,10 @@ const Call = (props) => {
         cancelable: true,
       });
     }
+  };
+
+  const onInfoPress = () => {
+    setShowInfo((prev) => !prev);
   };
 
   const onSelectedUser = async (selectedUser) => {
@@ -1072,7 +1087,6 @@ const Call = (props) => {
 
   return (
     <View style={contentStyles}>
-      <StatusBar hidden />
       <View style={styles.fullScreenVideo}>
         <VideoView
           preview={false}
@@ -1106,73 +1120,56 @@ const Call = (props) => {
           pointerEvents='box-none'
         >
           <View
-            style={[styles.headerView, { paddingTop: normalize(topInset) }]}
+            style={[
+              styles.headerView,
+              {
+                paddingTop: normalizeHeight(
+                  topInset || StatusBar.currentHeight
+                ),
+              },
+            ]}
             pointerEvents='box-none'
           >
-            {/* <View style={styles.sessionInfo}>
-              <View style={styles.sessionInfoHeader}>
-                <Text style={styles.sessionName}>{sessionName}</Text>
-                <Button
-                  title={false}
-                  containerStyle={styles.controlBtnStyle}
-                  Icon={() =>
-                    route.params.sessionPassword ? (
-                      <Lock
-                        fill={Colors.success}
-                        width={normalize(20)}
-                        height={normalize(20)}
-                      />
-                    ) : (
-                      <Lock
-                        fill={Colors.error}
-                        width={normalize(20)}
-                        height={normalize(20)}
-                      />
-                    )
-                  }
-                />
-              </View>
-              <Text style={styles.numberOfUsers}>
-                {`Participants: ${users.length}`}
-              </Text>
-            </View> */}
             <View style={styles.headerViewBtnWrapper}>
               <Button
                 title={false}
-                onPress={() => {}}
+                onPress={SwitchCamera}
                 containerStyle={styles.backBtn}
                 Icon={() => (
-                  <ChevronLeft
-                    fill={Colors.white}
-                    width={normalize(20)}
-                    height={normalize(20)}
+                  <CameraReverse
+                    width={normalize(25)}
+                    height={normalize(25)}
+                    fill={cameraReverse ? Colors.silver : Colors.white}
                   />
                 )}
               />
               <Button
                 title={false}
-                onPress={() => {}}
+                onPress={toggleSpeaker}
                 containerStyle={styles.backBtn}
-                Icon={() => (
-                  <VolumeHigh
-                    fill={Colors.white}
-                    width={normalize(25)}
-                    height={normalize(25)}
-                  />
-                )}
+                Icon={() =>
+                  isSpeakerOn ? (
+                    <VolumeHigh
+                      fill={Colors.success}
+                      width={normalize(25)}
+                      height={normalize(25)}
+                    />
+                  ) : (
+                    <VolumeMute
+                      fill={Colors.error}
+                      width={normalize(25)}
+                      height={normalize(25)}
+                    />
+                  )
+                }
               />
             </View>
-            <Pressable onPress={onPressLeave} style={styles.infoBtn}>
+            <Pressable onPress={onInfoPress} style={styles.infoBtn}>
+              <Text style={styles.infoBtnText}>Idanim</Text>
               <ShieldCheckMark
                 fill={Colors.success}
                 width={normalize(18)}
                 height={normalize(18)}
-              />
-              <Text style={styles.infoBtnText}>Idanim</Text>
-              <ChevronDown
-                fill={Colors.white}
-                width={normalize(12)}
-                height={normalize(12)}
               />
             </Pressable>
             <Pressable onPress={onPressLeave} style={styles.leaveButton}>
@@ -1226,85 +1223,13 @@ const Call = (props) => {
               )}
             />
              */}
-            <View style={styles.controls}>
-              <Button
-                title={false}
-                onPress={onPressAudio}
-                containerStyle={[styles.controlButton, styles.controlBtnStyle]}
-                Icon={() =>
-                  isMuted ? (
-                    <VolumeMute
-                      fill={Colors.error}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  ) : (
-                    <Volume
-                      fill={Colors.success}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  )
-                }
-              />
-              <Button
-                title={false}
-                onPress={onPressVideo}
-                containerStyle={[styles.controlButton, styles.controlBtnStyle]}
-                Icon={() =>
-                  isVideoOn ? (
-                    <CameraOn
-                      fill={Colors.success}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  ) : (
-                    <CameraOff
-                      fill={Colors.error}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  )
-                }
-              />
-              <Button
-                title={false}
-                onPress={onPressShare}
-                containerStyle={[styles.controlButton, styles.controlBtnStyle]}
-                Icon={() =>
-                  isSharing ? (
-                    <ShareScreen
-                      fill={Colors.success}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  ) : (
-                    <ShareScreen
-                      fill={Colors.error}
-                      width={normalize(20)}
-                      height={normalize(20)}
-                    />
-                  )
-                }
-              />
-
-              <Button
-                title={false}
-                onPress={onPressMore}
-                containerStyle={[styles.controlButton, styles.controlBtnStyle]}
-                Icon={() => (
-                  <Info
-                    fill={Colors.secondary}
-                    width={normalize(20)}
-                    height={normalize(20)}
-                  />
-                )}
-              />
-            </View>
           </View>
         </Animated.View>
 
-        <View style={styles.bottomWrapper} pointerEvents='box-none'>
+        <View
+          pointerEvents='box-none'
+          style={styles.bottomWrapper(showBottomTab)}
+        >
           {isInSession && isKeyboardOpen && (
             <FlatList
               horizontal
@@ -1331,7 +1256,7 @@ const Call = (props) => {
               )}
             />
           )}
-          {/* <BottomTabView /> */}
+
           {/*
           Chat Message Input Box   
            <Animated.View style={inputOpacityAnimatedStyle}>
@@ -1372,12 +1297,59 @@ const Call = (props) => {
         </View>
 
         <Modal
+          visible={showInfo}
+          transparent={true}
+          animationType='fade'
+          statusBarTranslucent
+        >
+          <View style={styles.modalWrapper}>
+            <TouchableWithoutFeedback onPress={onInfoPress}>
+              <View style={styles.modalOverlay} />
+            </TouchableWithoutFeedback>
+            <View style={styles.infoModalView}>
+              <Text style={styles.titleText}>Meeting and User Info</Text>
+              <Pressable
+                style={styles.textWrapper}
+                onPress={() => Clipboard.setString(sessionName)}
+              >
+                <Text style={styles.headerText}>Meeting Id</Text>
+                <Text style={styles.subText}>{sessionName}</Text>
+              </Pressable>
+              <Pressable
+                style={styles.textWrapper}
+                onPress={() =>
+                  Clipboard.setString(route.params.sessionPassword)
+                }
+              >
+                <Text style={styles.headerText}>Password</Text>
+                <Text style={styles.subText}>
+                  {route.params.sessionPassword || ''}
+                </Text>
+              </Pressable>
+              <View style={styles.textWrapper}>
+                <Text style={styles.headerText}>Participants</Text>
+                <Text style={styles.subText}>{users.length}</Text>
+              </View>
+              <View style={styles.textWrapper}>
+                <Text style={styles.headerText}>
+                  {'FPS  (require more than 1 participants)'}
+                </Text>
+                <Text style={styles.subText}>{videoInfo || '-'}</Text>
+              </View>
+              <Pressable onPress={onInfoPress} style={styles.infoCloseBtn}>
+                <Text style={styles.infoCloseBtnText}>Close</Text>
+              </Pressable>
+            </View>
+          </View>
+        </Modal>
+
+        <Modal
           transparent={true}
           animationType='fade'
           statusBarTranslucent
           visible={isRenameModalVisible}
         >
-          <TouchableOpacity style={styles.modalContainer} activeOpacity={1}>
+          <View style={styles.modalContainer}>
             <View style={styles.modal}>
               <Text style={styles.modalTitleText}>Change Name</Text>
               <TextInput
@@ -1387,8 +1359,8 @@ const Call = (props) => {
                 onChangeText={(text) => setNewName(text)}
               />
               <View style={styles.modalActionContainer}>
-                <TouchableOpacity
-                  style={styles.modalAction}
+                <Pressable
+                  style={styles.modalActionApply}
                   onPress={() => {
                     if (fullScreenUser) {
                       zoom.userHelper.changeName(
@@ -1400,9 +1372,9 @@ const Call = (props) => {
                     }
                   }}
                 >
-                  <Text style={styles.modalActionText}>Apply</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
+                  <Text style={styles.modalActionApplyText}>Apply</Text>
+                </Pressable>
+                <Pressable
                   style={styles.modalAction}
                   onPress={() => {
                     setNewName('');
@@ -1410,18 +1382,23 @@ const Call = (props) => {
                   }}
                 >
                   <Text style={styles.modalActionText}>Cancel</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
-          </TouchableOpacity>
+          </View>
         </Modal>
 
-        <Modal visible={modalVisible} transparent={true}>
+        <Modal
+          transparent={true}
+          animationType='fade'
+          statusBarTranslucent
+          visible={modalVisible}
+        >
           <View style={styles.moreListWrapper}>
             <View style={styles.moreList}>
               {onMoreOptions.map((option, index) => (
                 <View key={index} style={styles.moreItemWrapper}>
-                  <TouchableOpacity
+                  <Pressable
                     key={index}
                     onPress={() => {
                       option.onPress();
@@ -1429,13 +1406,13 @@ const Call = (props) => {
                     }}
                   >
                     <Text style={styles.moreItemText}>{option.text}</Text>
-                  </TouchableOpacity>
+                  </Pressable>
                 </View>
               ))}
               <View style={styles.cancelButton}>
-                <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Pressable onPress={() => setModalVisible(false)}>
                   <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
+                </Pressable>
               </View>
             </View>
           </View>
@@ -1449,8 +1426,21 @@ const Call = (props) => {
 
         {!isInSession && (
           <View style={styles.connectingWrapper}>
+            <Loader size={normalize(24)} color={Colors.white} />
             <Text style={styles.connectingText}>Connecting...</Text>
           </View>
+        )}
+        {showBottomTab && (
+          <BottomTabView
+            isMuted={!isMuted}
+            isVideoOn={isVideoOn}
+            isSharing={isSharing}
+            onPressMore={onPressMore}
+            onPressAudio={onPressAudio}
+            onPressVideo={onPressVideo}
+            onPressShare={onPressShare}
+            isRecordingStarted={isRecordingStarted}
+          />
         )}
       </View>
     </View>
