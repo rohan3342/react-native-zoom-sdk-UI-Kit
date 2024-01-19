@@ -86,11 +86,12 @@ Before you begin, ensure you have the following installed:
 
 [Android Build Link](https://install.appcenter.ms/users/rohan.singh-tothenew.com/apps/zoom-ui-kit/distribution_groups/public)
 
-![Launch Screen Image](assets/ss-1.png){ width=50% height=50% }
-![Home Screen Image](assets/ss-2.png){ width=50% height=50% }
-![Create Meeting Screen Image](assets/ss-3.png){ width=50% height=50% }
-![Join Screen Image](assets/ss-4.png){ width=50% height=50% }
-![Call Screen Image](assets/ss-5.png){ width=50% height=50% }
-![Call Screen Image](assets/ss-6.png){ width=50% height=50% }
-![Call Screen Image](assets/ss-7.png){ width=50% height=50% }
-![Call Screen Image](assets/ss-8.png){ width=50% height=50% }
+<img src="assets/ss-1.png" alt="Launch Screen Image" width="40%" height="40%">
+<img src="assets/ss-2.png" alt="Home Screen Image" width="40%" height="40%">
+<img src="assets/ss-3.png" alt="Create Meeting Screen Image" width="40%" height="40%">
+<img src="assets/ss-4.png" alt="Join Screen Image" width="40%" height="40%">
+<img src="assets/ss-5.png" alt="Call Screen Image" width="40%" height="40%">
+<img src="assets/ss-6.png" alt="Call Screen Image" width="40%" height="40%">
+<img src="assets/ss-7.png" alt="Call Screen Image" width="40%" height="40%">
+<img src="assets/ss-8.png" alt="Call Screen Image" width="40%" height="40%">
+
