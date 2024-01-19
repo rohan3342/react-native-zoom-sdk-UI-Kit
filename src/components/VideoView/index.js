@@ -41,7 +41,7 @@ function VideoView(props) {
     const updateVideoStatus = () => {
       if (!user) return;
       (async () => {
-        isMounted() && setIsVideoOn(await user.videoStatus.isOn());
+        isMounted() && setIsVideoOn(await user.videoStatus?.isOn());
       })();
     };
 

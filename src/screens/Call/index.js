@@ -188,7 +188,7 @@ const Call = (props) => {
       videoInfoTimer.current = setTimeout(async () => {
         if (!isMounted()) return;
 
-        const videoOn = await fullScreenUser?.videoStatus.isOn();
+        const videoOn = await fullScreenUser?.videoStatus?.isOn();
 
         // Video statistic info doesn't update when there's no remote users
         if (!fullScreenUser || !videoOn || users.length < 2) {
@@ -229,7 +229,7 @@ const Call = (props) => {
         const mySelf = new ZoomVideoSdkUser(session.mySelf);
         const remoteUsers = await zoom.session.getRemoteUsers();
         const muted = await mySelf.audioStatus.isMuted();
-        const videoOn = await mySelf.videoStatus.isOn();
+        const videoOn = await mySelf.videoStatus?.isOn();
         const speakerOn = await zoom.audioHelper.getSpeakerStatus();
         const originalAspectRatio =
           await zoom.videoHelper.isOriginalAspectRatioEnabled();
@@ -279,7 +279,7 @@ const Call = (props) => {
         const mySelf = new ZoomVideoSdkUser(await zoom.session.getMySelf());
         changedUsers.map((u) => {
           if (mySelf.userId === u.userId) {
-            mySelf.videoStatus.isOn().then((on) => setIsVideoOn(on));
+            mySelf.videoStatus?.isOn().then((on) => setIsVideoOn(on));
           }
         });
       }
@@ -698,7 +698,7 @@ const Call = (props) => {
 
   const onPressVideo = async () => {
     const mySelf = await zoom.session.getMySelf();
-    const videoOn = await mySelf.videoStatus.isOn();
+    const videoOn = await mySelf.videoStatus?.isOn();
     videoOn
       ? await zoom.videoHelper.stopVideo()
       : await zoom.videoHelper.startVideo();

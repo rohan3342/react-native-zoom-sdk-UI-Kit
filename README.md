@@ -51,6 +51,12 @@ Before you begin, ensure you have the following installed:
     yarn android
   ```
 
+6. **Please make following changes:**
+   - Add your `ZOOM_APP_KEY`
+   - Add your `ZOOM_APP_SECRET`
+   - Pass the `jwtToken` while join the call.
+   - For more details follow [this](https://developers.zoom.us/docs/video-sdk/react-native/get-started/) document.
+
 ## Folder Structure
 
 ```lua
@@ -75,3 +81,16 @@ Before you begin, ensure you have the following installed:
 |-- package.json
 |-- README.md
 ```
+
+## App Screenshots
+
+[Android Build Link](https://install.appcenter.ms/users/rohan.singh-tothenew.com/apps/zoom-ui-kit/distribution_groups/public)
+
+![Launch Screen Image](assets/ss-1.png){ width=50% height=50% }
+![Home Screen Image](assets/ss-2.png){ width=50% height=50% }
+![Create Meeting Screen Image](assets/ss-3.png){ width=50% height=50% }
+![Join Screen Image](assets/ss-4.png){ width=50% height=50% }
+![Call Screen Image](assets/ss-5.png){ width=50% height=50% }
+![Call Screen Image](assets/ss-6.png){ width=50% height=50% }
+![Call Screen Image](assets/ss-7.png){ width=50% height=50% }
+![Call Screen Image](assets/ss-8.png){ width=50% height=50% }
